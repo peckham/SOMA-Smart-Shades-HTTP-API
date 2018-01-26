@@ -1,16 +1,16 @@
-# How To Guide on controlling a <a rel="nofollow" href="https://www.amazon.co.uk/gp/product/B01E5O8P9O/ref=as_li_tl?ie=UTF8&camp=1634&creative=6738&creativeASIN=B01E5O8P9O&linkCode=as2&tag=httpgithcomsk-21">SOMA Smart Shade</a><img src="http://ir-uk.amazon-adsystem.com/e/ir?t=httpgithcomsk-21&l=as2&o=2&a=B01E5O8P9O" width="1" height="1" border="0" alt="" style="border:none !important; margin:0px !important;" /> with [Apple's Home App](http://www.apple.com/uk/ios/home/) using [Homebridge](https://github.com/nfarina/homebridge) on a <a rel="nofollow" href="https://www.amazon.co.uk/gp/product/B01CI5879A/ref=as_li_tl?ie=UTF8&camp=1634&creative=6738&creativeASIN=B01CI5879A&linkCode=as2&tag=httpgithcomsk-21">Raspberry Pi 3 Model B</a><img src="http://ir-uk.amazon-adsystem.com/e/ir?t=httpgithcomsk-21&l=as2&o=2&a=B01CI5879A" width="1" height="1" border="0" alt="" style="border:none !important; margin:0px !important;" />
+# Introduction
 
-
-<img src="images/overview.png">
+This repo contains the code needed to expose the [SOMA Smart Shade](https://uk.somasmarthome.com) device over HTTP.
+The APIs have been designed to work well with this [Homebridge/Homekit plugin](https://github.com/paolotremadio/homebridge-minimal-http-blinds).
 
 ---
 
-# Items needed for this project:
+# Items needed to make it work
 
-* 1x iOS 10 device running [Apple's Home App](http://www.apple.com/uk/ios/home/)
-* 1x Roller Blind (Example: <a rel="nofollow" href="https://www.amazon.co.uk/gp/product/B00XLE0O94/ref=as_li_tl?ie=UTF8&camp=1634&creative=6738&creativeASIN=B00XLE0O94&linkCode=as2&tag=httpgithcomsk-21">LINK</a><img src="http://ir-uk.amazon-adsystem.com/e/ir?t=httpgithcomsk-21&l=as2&o=2&a=B00XLE0O94" width="1" height="1" border="0" alt="" style="border:none !important; margin:0px !important;" />)
-* 1x SOMA Smart Shade (you can buy them from: <a rel="nofollow" href="https://www.amazon.co.uk/gp/product/B01E5O8P9O/ref=as_li_tl?ie=UTF8&camp=1634&creative=6738&creativeASIN=B01E5O8P9O&linkCode=as2&tag=httpgithcomsk-21">LINK</a><img src="http://ir-uk.amazon-adsystem.com/e/ir?t=httpgithcomsk-21&l=as2&o=2&a=B01E5O8P9O" width="1" height="1" border="0" alt="" style="border:none !important; margin:0px !important;" />)
-* 1x Raspberry Pi 3 Model B (you can buy them from: <a rel="nofollow" href="https://www.amazon.co.uk/gp/product/B01CI5879A/ref=as_li_tl?ie=UTF8&camp=1634&creative=6738&creativeASIN=B01CI5879A&linkCode=as2&tag=httpgithcomsk-21">LINK</a><img src="http://ir-uk.amazon-adsystem.com/e/ir?t=httpgithcomsk-21&l=as2&o=2&a=B01CI5879A" width="1" height="1" border="0" alt="" style="border:none !important; margin:0px !important;" />)
+* 1x iOS 10+ device running [Apple's Home App](http://www.apple.com/uk/ios/home/)
+* 1x Roller Blind with continuous loop cord (no junction)
+* 1x SOMA Smart Shade
+* 1x Raspberry Pi 3 Model B
 
 ---
 
@@ -18,17 +18,7 @@
 
 <img src="images/smartshadebig.png">
 
-#### Install and setup your Smart Shade into your desired location as normal using the [Smart Shades](https://itunes.apple.com/us/app/smart-shades/id1016406862?mt=8) app, a guide for doing this can be found here: https://youtu.be/9DTAcZiiFYU
-
----
-
-# Setup Your Raspberry Pi & Install Homebridge.
-
-<img src="images/pibig.png">
-
-#### Follow this step by step guide to install the HomeBridge service on your Raspberry PI which is used to connect/bridge your non-HomeKit accessories and make them HomeKit enabled
-
-https://github.com/nfarina/homebridge/wiki/Running-HomeBridge-on-a-Raspberry-Pi
+Install and setup your Smart Shade into your desired location as normal using the [Smart Shades](https://itunes.apple.com/us/app/smart-shades/id1016406862?mt=8) app, a guide for doing this can be found here: https://youtu.be/9DTAcZiiFYU
 
 ---
 
@@ -36,7 +26,7 @@ https://github.com/nfarina/homebridge/wiki/Running-HomeBridge-on-a-Raspberry-Pi
 
 #### Copy the files to the Raspberry Pi.
 
-* Download and place the *control.py, blinddown.sh* & *blindup.sh* files in your /home/pi directory.
+* Download this repo and put it under `/home/pi/webshades/`
 
 #### Find the Bluetooth MAC address of the Smart Shade.
 
@@ -53,51 +43,47 @@ You need to find the Bluetooth MAC address of the SOMA Smart Shade so your Raspb
   * Make a note of the Smart Shades MAC address.
 
 
-  * Open the *blinddown.sh* and *blindup.sh* files and edit the MAC address codes (00:00:00:00:00:00) so that they match the MAC code of the Smart Shade that you just found.
+#### Run the APIs
 
-#### Configure Homebridge to create a switch to move the shades up and down.
+Run the `webshades.py` script. 
 
-  * Install the [Script2](https://github.com/pponce/homebridge-script2) homebridge plugin using the command:
+#### Check if it works
 
-        sudo npm install -g homebridge-script2
+Open `http://<YOUR RASPBERRY PI IP ADDRESS>:8080/getbattery/<YOUR SOMA MAC ADDRESS>` (E.g. http://192.168.1.2:8080/getbattery/F6:AA:BB:CC:DD:EE)
 
-  * Configure the plugin to create a switch, on your Raspberry Pi go to your /home/pi/.homebridge folder and edit the *config.json* file
-
-
-Add in the following code under the accessories section.
-
-```
-"accessories": [
-{
-  "accessory": "Script2",
-  "name": "Blind",
-  "on": "./blinddown.sh",
-  "off": "./blindup.sh",
-  "fileState": "./script.flag",
-  "on_value" : "true"
-}
-]
-```
+You should get a response with a number from 1 to 100 (where 100 is a battery fully charged).
 
 ---
 
 # Finish
 
-#### Now that everything is installed and configured you should be able to run Homebridge on your Raspberry Pi with the command:
+Now that everything is installed and configured, your SOMA smarth shade is available over HTTP.
 
-    homebridge
+Install this [Homebridge plugin](https://github.com/paolotremadio/homebridge-minimal-http-blinds) by running:
 
-#### And if you did everything correctly a new Blind accessory switch will show up in your Home.app on your iPhone or iPad
+`npm install -g https://github.com/paolotremadio/homebridge-minimal-http-blinds`
 
-#### Turning the Switch OFF will raise your blind and turining it ON will lower it.
+Configure Homebridge accordingly. Here's an example:
 
+````json
+{
+    "accessories": [
+        {
+            "name": "Kitchen Blinds",
+            "accessory": "MinimalisticHttpBlinds",
+  
+            "get_current_position_url": "http://192.168.1.2:8080/getposition/F6:AA:BB:CC:DD:EE",
+            "set_target_position_url": "http://192.168.1.2:8080/setposition/F6:AA:BB:CC:DD:EE/%position%",
+            "set_target_position_method": "GET",
+            "get_current_position_polling_millis": "300000"
+        }
+    ]
+}
+````
+ 
 ---
 
-### Guide created by SkyJohn on March 25th 2017
+# Credits
+Based on the Python control script from [jeremynoel476](https://bitbucket.org/jeremynoel476/smartblinds-diy)
+and the ["official" python integration instrucitons](http://www.instructables.com/id/Connect-Soma-Smart-Shades-From-Web-With-Raspberry-/)
 
----
-
-# Changelog
-
-### 1.0.0
-* How To Guide created.
