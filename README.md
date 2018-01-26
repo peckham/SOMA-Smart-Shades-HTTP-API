@@ -85,5 +85,5 @@ Configure Homebridge accordingly. Here's an example:
 
 # Credits
 Based on the Python control script from [jeremynoel476](https://bitbucket.org/jeremynoel476/smartblinds-diy)
-and the ["official" python integration instrucitons](http://www.instructables.com/id/Connect-Soma-Smart-Shades-From-Web-With-Raspberry-/)
+and the ["official" python integration instructions](http://www.instructables.com/id/Connect-Soma-Smart-Shades-From-Web-With-Raspberry-/)
 
