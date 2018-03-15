@@ -41,6 +41,10 @@ You need to find the Bluetooth MAC address of the SOMA Smart Shade so your Raspb
         sudo hcitool lescan
 
   * Make a note of the Smart Shades MAC address.
+  
+#### Install the Python dependencies
+
+Run `sudo pip install web.py`
 
 
 #### Run the APIs
