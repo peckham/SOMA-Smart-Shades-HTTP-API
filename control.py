@@ -200,10 +200,10 @@ def parse_read_write():
 
 
 # restart bluetooth
-#pd = subprocess.Popen(["/bin/hciconfig", "hci0", "down"])
-#pd.wait()
-#pu = subprocess.Popen(["/bin/hciconfig", "hci0", "up"])
-#pu.wait()
+pd = subprocess.Popen(["/bin/hciconfig", "hci0", "down"])
+pd.wait()
+pu = subprocess.Popen(["/bin/hciconfig", "hci0", "up"])
+pu.wait()
 
 # connect to peripheral and execute command
 ps = subprocess.Popen(["/usr/bin/gatttool", "-b", args.target, "-t", "random", "-I"], stdout=subprocess.PIPE,
