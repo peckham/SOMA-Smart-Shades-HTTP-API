@@ -21,6 +21,7 @@ cmd_get_battery = "get_battery"
 cmd_get_position = "get_position"
 cmd_move_up = "move_up"
 cmd_move_down = "move_down"
+cmd_move_stop = "move_stop"
 cmd_move_target = "move_target"
 
 # options
@@ -28,7 +29,7 @@ parser = argparse.ArgumentParser(description=script_dec, version=str(script_ver)
 parser.add_argument("-t", "--target", dest="target", action="store", help="target peripheral MAC address",
                     required=True)
 parser.add_argument("-c", "--command", dest="command", action="store",
-                    choices=[cmd_get_battery, cmd_get_position, cmd_move_up, cmd_move_down, cmd_move_target],
+                    choices=[cmd_get_battery, cmd_get_position, cmd_move_up, cmd_move_down, cmd_move_stop, cmd_move_target],
                     help="command to execute on the peripheral", required=True)
 parser.add_argument("-a", "--motor_target", dest="motor_target", action="store", type=int,
                     help="value in range 0 - 100, won't move if the distance is too short, set when command is " +
@@ -55,6 +56,7 @@ MOTOR_CONTROL_CHARACTERISTIC_UUID = "00001530-B87F-490C-92CB-11BA5EA5167C".lower
 MOTOR_TARGET_CHARACTERISTIC_UUID = "00001526-B87F-490C-92CB-11BA5EA5167C".lower()
 MOTOR_MOVE_UP = 69
 MOTOR_MOVE_DOWN = 96
+MOTOR_MOVE_STOP = 0
 
 
 # peripheral control methods
@@ -227,6 +229,8 @@ if parse_connect():
                 write_characteristic(ps.stdin, char_dict[MOTOR_CONTROL_CHARACTERISTIC_UUID], MOTOR_MOVE_DOWN)
             elif args.command == cmd_move_up:
                 write_characteristic(ps.stdin, char_dict[MOTOR_CONTROL_CHARACTERISTIC_UUID], MOTOR_MOVE_UP)
+            elif args.command == cmd_move_stop:
+                write_characteristic(ps.stdin, char_dict[MOTOR_CONTROL_CHARACTERISTIC_UUID], MOTOR_MOVE_STOP)
             elif args.command == cmd_move_target:
                 write_characteristic(ps.stdin, char_dict[MOTOR_TARGET_CHARACTERISTIC_UUID],
                                      format(args.motor_target, "02x")) # convert input int to 2 digit hex string
